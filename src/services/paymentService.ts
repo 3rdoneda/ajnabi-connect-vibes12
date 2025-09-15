@@ -1,4 +1,4 @@
-import { RAZORPAY_KEY_ID, PAYMENT_CONFIG, COIN_PACKAGES, PREMIUM_PLANS, UNLIMITED_CALLS_PLAN } from '@/config/payments';
+import { RAZORPAY_KEY_ID, RAZORPAY_SECRET_KEY, PAYMENT_CONFIG, COIN_PACKAGES, PREMIUM_PLANS, UNLIMITED_CALLS_PLAN } from '@/config/payments';
 
 declare global {
   interface Window {
@@ -152,7 +152,7 @@ export class PaymentService {
 
       return new Promise((resolve) => {
         const razorpayOptions = {
-          key: "6rak2mO9eYJUD8Dvzz3b1o97",
+          key: RAZORPAY_KEY_ID,
           amount: options.amount * 100, // Convert to paise
           currency: options.currency || PAYMENT_CONFIG.currency,
           name: PAYMENT_CONFIG.company.name,
