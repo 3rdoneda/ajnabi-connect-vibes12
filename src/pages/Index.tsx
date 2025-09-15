@@ -281,7 +281,14 @@ const Index = () => {
         <OnboardingScreen
           initialProfile={isEditingProfile ? userProfile : undefined}
           isPremium={isPremium}
-          onRequestUpgrade={() => setShowPremiumModal(true)}
+          onRequestUpgrade={() => setCurrentScreen("premium")}
+          onSkip={() => {
+            if (isEditingProfile) {
+              setIsEditingProfile(false);
+            } else {
+              setAppState("main");
+            }
+          }}
           onComplete={(profile) => {
             setUserProfile(profile);
             if (isEditingProfile) {

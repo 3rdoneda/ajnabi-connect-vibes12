@@ -19,6 +19,7 @@ interface UserProfile {
 
 interface OnboardingScreenProps {
   onComplete: (profile: UserProfile) => void;
+  onSkip?: () => void;
   initialProfile?: Partial<UserProfile>;
   isPremium?: boolean;
   onRequestUpgrade?: () => void;
@@ -31,7 +32,7 @@ const availableInterests = [
   "🍷 Wine", "🏖️ Beach", "🏔️ Mountains", "🎪 Adventure", "📖 Writing", "🎯 Goals"
 ];
 
-export function OnboardingScreen({ onComplete, initialProfile, isPremium = false, onRequestUpgrade }: OnboardingScreenProps) {
+export function OnboardingScreen({ onComplete, onSkip, initialProfile, isPremium = false, onRequestUpgrade }: OnboardingScreenProps) {
   const [username, setUsername] = useState(initialProfile?.username ?? "");
   const [photos, setPhotos] = useState<string[]>(initialProfile?.photos ?? []);
   const [bio, setBio] = useState(initialProfile?.bio ?? "");
@@ -125,6 +126,24 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
       matchPreference,
       gender,
     });
+  };
+
+  const handleSkip = () => {
+    // Create a minimal default profile for skipping
+    const defaultProfile: UserProfile = {
+      username: "Anonymous",
+      photos: [],
+      bio: "Just exploring the app!",
+      interests: ["🎵 Music", "🎬 Movies", "✈️ Travel"],
+      matchPreference: "anyone",
+      gender: "other",
+    };
+    
+    if (onSkip) {
+      onSkip();
+    } else {
+      onComplete(defaultProfile);
+    }
   };
 
   const PreferenceButton = ({
@@ -371,15 +390,25 @@ export function OnboardingScreen({ onComplete, initialProfile, isPremium = false
 
       {/* Submit Button */}
       <div className="px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8 flex-shrink-0 max-w-4xl mx-auto w-full">
-        <Button
-          onClick={handleSubmit}
-          disabled={!canSubmit()}
-          className="w-full h-12 sm:h-14 lg:h-16 rounded-xl sm:rounded-2xl font-poppins font-semibold text-base sm:text-lg lg:text-xl"
-          variant="gradient"
-        >
-          Complete Profile
-          <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ml-2" />
-        </Button>
+        <div className="space-y-3">
+          <Button
+            onClick={handleSubmit}
+            disabled={!canSubmit()}
+            className="w-full h-12 sm:h-14 lg:h-16 rounded-xl sm:rounded-2xl font-poppins font-semibold text-base sm:text-lg lg:text-xl"
+            variant="gradient"
+          >
+            Complete Profile
+            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ml-2" />
+          </Button>
+          
+          <Button
+            onClick={handleSkip}
+            variant="outline"
+            className="w-full h-10 sm:h-12 lg:h-14 rounded-xl sm:rounded-2xl font-poppins font-medium text-sm sm:text-base lg:text-lg border-2 border-white/30 text-white hover:bg-white/10 hover:border-white/50"
+          >
+            Skip for now
+          </Button>
+        </div>
       </div>
       
       {/* Bottom Safe Area */}
